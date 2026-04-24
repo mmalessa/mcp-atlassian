@@ -54,16 +54,27 @@ API token: https://id.atlassian.com/manage-profile/security/api-tokens
 
 ```
 BITBUCKET_EMAIL=your@email.com
-BITBUCKET_API_TOKEN=your_atlassian_api_token
+BITBUCKET_API_TOKEN=your_scoped_api_token
 BITBUCKET_WORKSPACE=your_workspace
 ```
 
-API token: https://id.atlassian.com/manage-profile/security/api-tokens
-— the same Atlassian API token works for Bitbucket Cloud, Jira and Confluence,
-so you can reuse the token from `mcp-atlassian`.
-The workspace is the first segment from the PR URL
-(`bitbucket.org/<WORKSPACE>/<REPO>/pull-requests/<ID>`); the `<REPO>` segment
-is passed to each tool call as the `repo` parameter.
+Bitbucket Cloud requires a **scoped** Atlassian API token. The classic unscoped
+token that works with Jira/Confluence (plain `Create API token` button) will
+return HTTP 401/403 against the Bitbucket API — you need a separate token.
+
+How to create one:
+
+1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+2. Click **`Create API token with scopes`** (not the plain `Create API token`)
+3. Name it, set expiry, click **Next**
+4. Select **Bitbucket** as the target application
+5. Grant at least these scopes:
+   - `read:repository:bitbucket`
+   - `read:pullrequest:bitbucket`
+6. Create and copy the token immediately — it is shown only once
+
+`BITBUCKET_EMAIL` is the Atlassian account email (the address you use to sign
+in at id.atlassian.com), not the Bitbucket username.
 
 ### `.env` loading order
 
